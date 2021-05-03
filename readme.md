@@ -2,6 +2,15 @@
 docker run --rm -it --gpus all -v ${PWD}:/app -v ${PWD}/result:/app/result easttraining python2.7 multigpu_train.py --gpu_list=0 --input_size=512 --batch_size_per_gpu=14 --checkpoint_path=icdar/east_icdar2015_resnet_v1_50_rbox/ --text_scale=512 --training_data_path=data/ --geometry=RBOX --learning_rate=0.0001 --num_readers=24 --pretrained_model_path=train/resnet_v1_50.ckpt
 ```
 
+```
+python3 multigpu_train.py --gpu_list=0 --input_size=512 --batch_size_per_gpu=1 --checkpoint_path=icdar/7/ --text_scale=512 --training_data_path=data/ --geometry=RBOX --learning_rate=0.0001 --num_readers=1 
+```
+
+```
+-Ubuntu 1804
+-conda install tensorflow==1.12.0
+```
+
 # EAST: An Efficient and Accurate Scene Text Detector
 
 ### Introduction
@@ -55,8 +64,8 @@ If you want to train the model, you should provide the dataset path, in the data
 and run
 
 ```
-python multigpu_train.py --gpu_list=0 --input_size=512 --batch_size_per_gpu=14 --checkpoint_path=/tmp/east_icdar2015_resnet_v1_50_rbox/ \
---text_scale=512 --training_data_path=/data/ocr/icdar2015/ --geometry=RBOX --learning_rate=0.0001 --num_readers=24 \
+python3 multigpu_train.py --gpu_list=0 --input_size=512 --batch_size_per_gpu=14 --checkpoint_path=icdar/1/ \
+--text_scale=512 --training_data_path=data/ --geometry=RBOX --learning_rate=0.0001 --num_readers=24 \
 --pretrained_model_path=/tmp/resnet_v1_50.ckpt
 ```
 

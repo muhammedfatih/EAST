@@ -168,7 +168,19 @@ def main(argv=None):
 
             if step % FLAGS.save_checkpoint_steps == 0:
                 saver.save(sess, FLAGS.checkpoint_path + 'model.ckpt', global_step=global_step)
-                break
+
+                output_node_names = []#'feature_fusion/Conv_7/Sigmoid', 'feature_fusion/concat_3']    # Output nodes
+
+                # Freeze the graph
+                frozen_graph_def = tf.graph_util.convert_variables_to_constants(
+                    sess,
+                    sess.graph_def,
+                    output_node_names)
+
+                # Save the frozen graph
+                with open('output_graph.pb', 'wb') as f:
+                    f.write(frozen_graph_def.SerializeToString())
+
 
             if step % FLAGS.save_summary_steps == 0:
                 _, tl, summary_str = sess.run([train_op, total_loss, summary_op], feed_dict={input_images: data[0],
