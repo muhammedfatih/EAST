@@ -8,10 +8,10 @@ import tensorflow as tf
 import locality_aware_nms as nms_locality
 import lanms
 
-tf.app.flags.DEFINE_string('test_data_path', '/tmp/ch4_test_images/images/', '')
+tf.app.flags.DEFINE_string('test_data_path', 'data/', '')
 tf.app.flags.DEFINE_string('gpu_list', '0', '')
-tf.app.flags.DEFINE_string('checkpoint_path', '/tmp/east_icdar2015_resnet_v1_50_rbox/', '')
-tf.app.flags.DEFINE_string('output_dir', '/tmp/ch4_test_images/images/', '')
+tf.app.flags.DEFINE_string('checkpoint_path', 'icdar/11/', '')
+tf.app.flags.DEFINE_string('output_dir', 'export_dir/2/', '')
 tf.app.flags.DEFINE_bool('no_write_images', False, 'do not write images')
 
 import model
@@ -180,6 +180,7 @@ def main(argv=None):
 
                     with open(res_file, 'w') as f:
                         for box in boxes:
+                            # cv2.rectangle(np.float32(im), (box[0, 0], box[0, 1]), (box[3, 0],box[3, 1]), (0,255,0), 2, cv2.LINE_AA)
                             # to avoid submitting errors
                             box = sort_poly(box.astype(np.int32))
                             if np.linalg.norm(box[0] - box[1]) < 5 or np.linalg.norm(box[3]-box[0]) < 5:
@@ -187,7 +188,10 @@ def main(argv=None):
                             f.write('{},{},{},{},{},{},{},{}\r\n'.format(
                                 box[0, 0], box[0, 1], box[1, 0], box[1, 1], box[2, 0], box[2, 1], box[3, 0], box[3, 1],
                             ))
-                            cv2.polylines(im[:, :, ::-1], [box.astype(np.int32).reshape((-1, 1, 2))], True, color=(255, 255, 0), thickness=1)
+                            cv2.rectangle(im[:, :, ::-1], (box[0, 0], box[0, 1]), (box[1, 0], box[1, 1]), color=(255, 0, 0), thickness=3)
+                            cv2.rectangle(im[:, :, ::-1], (box[0, 0], box[0, 1]), (box[2, 0], box[2, 1]), color=(0, 255, 0), thickness=3)
+                            cv2.rectangle(im[:, :, ::-1], (box[0, 0], box[0, 1]), (box[3, 0], box[3, 1]), color=(0, 0, 255), thickness=3)
+                            # cv2.polylines(im[:, :, ::-1], [box.astype(np.int32).reshape((-1, 1, 2))], True, color=(255, 255, 0), thickness=3)
                 if not FLAGS.no_write_images:
                     img_path = os.path.join(FLAGS.output_dir, os.path.basename(im_fn))
                     cv2.imwrite(img_path, im[:, :, ::-1])
